@@ -59,6 +59,8 @@ architecture Behavioral of led_test is
                 clock_1ms     : IN STD_LOGIC;
                 clock_1s      : IN STD_LOGIC;
                 button_center : IN STD_LOGIC;
+                button_top     : IN STD_LOGIC;
+                button_bottom    : IN STD_LOGIC;
                 game_value    : IN STD_LOGIC_VECTOR(3 downto 0);
                 start         : OUT STD_LOGIC;
                 reset_leds    : OUT STD_LOGIC;
@@ -75,7 +77,7 @@ architecture Behavioral of led_test is
   signal buttons_clean              : STD_LOGIC_VECTOR(4 downto 0); -- buttons debounce
   
 begin
-    control_game  : Control port map (clock=> clock, clock_1ms=> clock_1ms, clock_1s=> clock_1s, button_center=> buttons_clean(4), game_value=>game_value, start=>start, reset_leds=> reset_leds, seg_0=>seg_0, seg_1=>seg_1, seg_2=>seg_2, seg_3=>seg_3);
+    control_game  : Control port map (clock=> clock, clock_1ms=> clock_1ms, clock_1s=> clock_1s, button_center=> buttons_clean(4),  button_top=> buttons_clean(2), button_bottom=>buttons_clean(3), game_value=>game_value, start=>start, reset_leds=> reset_leds, seg_0=>seg_0, seg_1=>seg_1, seg_2=>seg_2, seg_3=>seg_3);
     timers        : Timer   port map (clock=> clock, clock_1ms=> clock_1ms, clock_1s=>clock_1s);
     button_left   : Button  port map (clock=> clock, button_input=> buttons(0), button_output=>buttons_clean(0));
     button_right  : Button  port map (clock=> clock, button_input=> buttons(1), button_output=>buttons_clean(1));

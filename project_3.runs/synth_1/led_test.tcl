@@ -79,6 +79,7 @@ read_vhdl -library xil_defaultlib {
   {D:/New folder/project_1/project_3.srcs/sources_1/new/HexTo7Seg.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/RandomNumber.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/Timer.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/fsm.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/leds.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/led_test.vhd}
 }

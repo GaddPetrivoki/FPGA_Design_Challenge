@@ -1,13 +1,18 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use work.fsm_types.all;
 
 entity Control is
   Port (
     clock         : IN STD_LOGIC;
     clock_1ms     : IN STD_LOGIC;
     clock_1s      : IN STD_LOGIC;
+    
     button_center : IN STD_LOGIC;
+    button_top     : IN STD_LOGIC;
+    button_bottom    : IN STD_LOGIC;
+    
     game_value    : IN STD_LOGIC_VECTOR(3 downto 0);
     start         : OUT STD_LOGIC;
     reset_leds    : OUT STD_LOGIC;
@@ -18,8 +23,25 @@ entity Control is
        );
 end Control;
 
+
+
 architecture Behavioral of Control is
-    
+
+
+--type state_type is (INIT, IDLE, PLAY, HS, CURRENT_SCORE, PAUSE);  
+  
+    component fsm is
+    Port ( 
+           Clock : in STD_LOGIC;
+          
+           Enter_Btn : in STD_LOGIC;
+           High_Score_Btn : in STD_LOGIC;
+           Pause_Cancel_Btn : in STD_LOGIC;
+           current_state_out : out state_type
+           );
+end component;
+
+
     component HexTo7Seg
       Port (  
                 value : in  STD_LOGIC_VECTOR(3 downto 0);
@@ -35,6 +57,9 @@ architecture Behavioral of Control is
             );
     end component;
   
+  -- State management 
+  --type state_type is (INIT, IDLE, PLAY, HS, CURRENT_SCORE, PAUSE);  
+    signal game_state : state_type;
     
     signal submit, read_submit, start_control, read_number : STD_LOGIC := '0';
     signal count : UNSIGNED(3 downto 0) := "1111";
@@ -44,6 +69,9 @@ architecture Behavioral of Control is
     signal seg_tens, seg_ones, seg_lifes, seg_number : STD_LOGIC_VECTOR(6 downto 0);
     
 begin
+
+    game_fsm: fsm port map(Clock=>clock,  Enter_Btn => button_center, High_Score_Btn => button_bottom , Pause_Cancel_Btn => button_top,current_state_out => game_state);
+    
     seg0_translate: HexTo7Seg port map (value => STD_LOGIC_VECTOR(tens_digit), seg => seg_tens);
     seg1_translate: HexTo7Seg port map (value => STD_LOGIC_VECTOR(ones_digit), seg => seg_ones);
     seg3_number:    HexTo7Seg port map (value => random_number, seg => seg_number);
@@ -59,9 +87,16 @@ begin
         end case;
     end process;
     
-    process (start_control, seg_tens, seg_ones, seg_lifes, seg_number)
+    process (game_state, seg_tens, seg_ones, seg_lifes, seg_number)
     begin
-        if (start_control='0') then
+   
+        if  game_state = INIT then
+            seg_0 <=  "1111001"; -- I
+            seg_1 <=  "1001000"; -- H
+            seg_2 <= "1111001"; -- I
+            seg_3 <= "1100000"; -- t
+            
+        elsif game_state = IDLE then
             seg_0 <= "1001000"; -- H
             seg_1 <= "0000001"; -- O
             seg_2 <= "1110001"; -- L
@@ -90,7 +125,10 @@ begin
     process(clock_1s)
 begin
     if rising_edge(clock_1s) then
-        if start_control = '1' then
+    
+    
+    
+        if game_state = PLAY then
             -- Reset read signals at start of each cycle
             read_number <= '0';  
             
@@ -129,7 +167,7 @@ end process;
     begin
     
         if rising_edge(clock_1ms) then
-            if start_control = '0' and button_center = '1' then
+            if game_state = IDLE and button_center = '1' then
                 start_control <= '1';
                
             end if;
@@ -144,4 +182,6 @@ end process;
 end process;
     
     start <= start_control;
+  
+    
 end Behavioral;
