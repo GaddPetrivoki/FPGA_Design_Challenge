@@ -1,0 +1,5 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/bootcamp07/project_3/project_3.sim/sim_1/synth/timing/xsim/led_test_tb_time_synth.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module led_test
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/Users/bootcamp07/project_3/project_3.srcs/sim_1/new/led_test_tb.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'led_test_tb'
