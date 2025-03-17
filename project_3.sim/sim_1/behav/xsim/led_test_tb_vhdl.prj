@@ -1,7 +1,14 @@
 # compile vhdl design source files
 vhdl xil_defaultlib  \
+"../../../../project_3.srcs/sources_1/new/Button.vhd" \
+"../../../../project_3.srcs/sources_1/new/Control.vhd" \
+"../../../../project_3.srcs/sources_1/new/Display.vhd" \
+"../../../../project_3.srcs/sources_1/new/HexTo7Seg.vhd" \
+"../../../../project_3.srcs/sources_1/new/RandomNumber.vhd" \
+"../../../../project_3.srcs/sources_1/new/Timer.vhd" \
 "../../../../project_3.srcs/sources_1/new/led_test.vhd" \
-"../../../../project_3.srcs/sim_1/new/led_test_tb.vhd" \
+"../../../../project_3.srcs/sources_1/new/leds.vhd" \
+"../../../../project_3.srcs/sim_1/new/test.vhd" \
 
 # Do not sort compile order
 nosort

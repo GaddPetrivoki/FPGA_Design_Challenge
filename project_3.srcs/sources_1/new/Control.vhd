@@ -85,40 +85,46 @@ begin
         end if;
     end process;
 
-    process(clock_1s)
-    begin
-        if rising_edge(clock_1s) then
-            if start_control = '1' then -- Replace with state management call game start here
-                -- Score the value when submit
-                if submit = '1' then
-                    if game_value = random_number then
-                        reset_leds <= '1';
-                        read_number <= '1';
-                        count <= "1111"; -- Reset counter
-                        read_submit <= '1';
-                      
-                    else
-                        count <= "0000";
-                        read_submit <= '1';
-                   end if;   
-                end if;     
-                    
-               -- Clock checker
-                if count = "0000" then
-                     reset_leds <= '1';
-                     read_number <= '1';
-                     lifes <= lifes - 1;
-                     count <= "1111"; -- Reset counter
-                else
-                     reset_leds <= '0';
-                     read_number <= '0';
-                     count <= count - 1;
-                     read_submit <= '0'; 
-                    end if;
-               end if;                    
-            end if;         
-    end process;
+
     
+    process(clock_1s)
+begin
+    if rising_edge(clock_1s) then
+        if start_control = '1' then
+            -- Reset read signals at start of each cycle
+            read_number <= '0';  
+            
+            -- Score the value when submit
+            if submit = '1' then
+                if game_value = random_number then
+                    reset_leds <= '1';
+                    read_number <= '1';
+                    count <= "1111"; -- Reset counter
+                    read_submit <= '1';
+                elsif game_value /= random_number then
+                    count <= "0000";
+                    read_submit <= '1';
+                end if;   
+            elsif read_submit = '1' then
+                -- Keep read_submit active until next clock cycle after submit is cleared
+                read_submit <= '0';
+            end if;     
+                
+            -- Clock checker
+            if count = "0000" then
+                reset_leds <= '1';
+                read_number <= '1';
+                lifes <= lifes - 1;
+                count <= "1111"; -- Reset counter
+            else
+                reset_leds <= '0';
+                count <= count - 1;
+            end if;
+        end if;                    
+    end if;         
+end process;
+
+-- Button handling process
     process(clock_1ms)
     begin
     
@@ -135,10 +141,7 @@ begin
             end if;
         end if;
         
-  
-        
-        
-    end process;
+end process;
     
     start <= start_control;
 end Behavioral;

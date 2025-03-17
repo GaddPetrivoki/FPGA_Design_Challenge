@@ -4,7 +4,7 @@
 
 set TIME_start [clock seconds] 
 namespace eval ::optrace {
-  variable script "C:/Users/bootcamp07/project_3/project_3.runs/synth_1/led_test.tcl"
+  variable script "D:/New folder/project_1/project_3.runs/synth_1/led_test.tcl"
   variable category "vivado_synth"
 }
 
@@ -55,20 +55,6 @@ if {$::dispatch::connected} {
   }
 }
 
-proc create_report { reportName command } {
-  set status "."
-  append status $reportName ".fail"
-  if { [file exists $status] } {
-    eval file delete [glob $status]
-  }
-  send_msg_id runtcl-4 info "Executing : $command"
-  set retval [eval catch { $command } msg]
-  if { $retval != 0 } {
-    set fp [open $status w]
-    close $fp
-    send_msg_id runtcl-5 warning "$msg"
-  }
-}
 OPTRACE "synth_1" START { ROLLUP_AUTO }
 set_param chipscope.maxJobs 2
 set_param xicom.use_bs_reader 1
@@ -78,23 +64,23 @@ create_project -in_memory -part xc7a35tcpg236-1
 set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
 set_param synth.vivado.isSynthRun true
-set_property webtalk.parent_dir C:/Users/bootcamp07/project_3/project_3.cache/wt [current_project]
-set_property parent.project_path C:/Users/bootcamp07/project_3/project_3.xpr [current_project]
+set_property webtalk.parent_dir {D:/New folder/project_1/project_3.cache/wt} [current_project]
+set_property parent.project_path {D:/New folder/project_1/project_3.xpr} [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language Verilog [current_project]
-set_property ip_output_repo c:/Users/bootcamp07/project_3/project_3.cache/ip [current_project]
+set_property ip_output_repo {d:/New folder/project_1/project_3.cache/ip} [current_project]
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_vhdl -library xil_defaultlib {
-  C:/Users/bootcamp07/project_3/project_3.srcs/sources_1/new/Button.vhd
-  C:/Users/bootcamp07/project_3/project_3.srcs/sources_1/new/Control.vhd
-  C:/Users/bootcamp07/project_3/project_3.srcs/sources_1/new/Display.vhd
-  C:/Users/bootcamp07/project_3/project_3.srcs/sources_1/new/HexTo7Seg.vhd
-  C:/Users/bootcamp07/project_3/project_3.srcs/sources_1/new/RandomNumber.vhd
-  C:/Users/bootcamp07/project_3/project_3.srcs/sources_1/new/Timer.vhd
-  C:/Users/bootcamp07/project_3/project_3.srcs/sources_1/new/leds.vhd
-  C:/Users/bootcamp07/project_3/project_3.srcs/sources_1/new/led_test.vhd
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/Button.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/Control.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/Display.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/HexTo7Seg.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/RandomNumber.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/Timer.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/leds.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/led_test.vhd}
 }
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
@@ -105,12 +91,12 @@ OPTRACE "Adding files" END { }
 foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
   set_property used_in_implementation false $dcp
 }
-read_xdc C:/Users/bootcamp07/project_3/project_3.srcs/constrs_1/new/constraints.xdc
-set_property used_in_implementation false [get_files C:/Users/bootcamp07/project_3/project_3.srcs/constrs_1/new/constraints.xdc]
+read_xdc {{D:/New folder/project_1/project_3.srcs/constrs_1/new/constraints.xdc}}
+set_property used_in_implementation false [get_files {{D:/New folder/project_1/project_3.srcs/constrs_1/new/constraints.xdc}}]
 
 set_param ips.enableIPCacheLiteLoad 1
 
-read_checkpoint -auto_incremental -incremental C:/Users/bootcamp07/project_3/project_3.srcs/utils_1/imports/synth_1/led_test.dcp
+read_checkpoint -auto_incremental -incremental {D:/New folder/project_1/project_3.srcs/utils_1/imports/synth_1/led_test.dcp}
 close [open __synthesis_is_running__ w]
 
 OPTRACE "synth_design" START { }
@@ -127,7 +113,7 @@ set_param constraints.enableBinaryConstraints false
 write_checkpoint -force -noxdef led_test.dcp
 OPTRACE "write_checkpoint" END { }
 OPTRACE "synth reports" START { REPORT }
-create_report "synth_1_synth_report_utilization_0" "report_utilization -file led_test_utilization_synth.rpt -pb led_test_utilization_synth.pb"
+generate_parallel_reports -reports { "report_utilization -file led_test_utilization_synth.rpt -pb led_test_utilization_synth.pb"  } 
 OPTRACE "synth reports" END { }
 file delete __synthesis_is_running__
 close [open __synthesis_is_complete__ w]
