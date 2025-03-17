@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
-| Date         : Mon Mar 17 16:41:47 2025
+| Date         : Mon Mar 17 17:15:08 2025
 | Host         : LAPTOP-AIR04ARS running 64-bit major release  (build 9200)
 | Command      : report_methodology -file led_test_methodology_drc_routed.rpt -pb led_test_methodology_drc_routed.pb -rpx led_test_methodology_drc_routed.rpx
 | Design       : led_test
@@ -23,14 +23,12 @@ Table of Contents
           Floorplan: design_1
       Design limits: <entire design considered>
              Max checks: <unlimited>
-             Checks found: 307
-+-----------+------------------+--------------------------------+--------+
-| Rule      | Severity         | Description                    | Checks |
-+-----------+------------------+--------------------------------+--------+
-| TIMING-17 | Critical Warning | Non-clocked sequential cell    | 301    |
-| TIMING-20 | Warning          | Non-clocked latch              | 5      |
-| LATCH-1   | Advisory         | Existing latches in the design | 1      |
-+-----------+------------------+--------------------------------+--------+
+             Checks found: 301
++-----------+------------------+-----------------------------+--------+
+| Rule      | Severity         | Description                 | Checks |
++-----------+------------------+-----------------------------+--------+
+| TIMING-17 | Critical Warning | Non-clocked sequential cell | 301    |
++-----------+------------------+-----------------------------+--------+
 
 2. REPORT DETAILS
 -----------------
@@ -1537,36 +1535,6 @@ Related violations: <none>
 TIMING-17#301 Critical Warning
 Non-clocked sequential cell  
 The clock pin timers/count_1s_control_reg[9]/C is not reached by a timing clock
-Related violations: <none>
-
-TIMING-20#1 Warning
-Non-clocked latch  
-The latch control_game/game_fsm/FSM_onehot_next_state_reg[0] cannot be properly analyzed as its control pin control_game/game_fsm/FSM_onehot_next_state_reg[0]/G is not reached by a timing clock
-Related violations: <none>
-
-TIMING-20#2 Warning
-Non-clocked latch  
-The latch control_game/game_fsm/FSM_onehot_next_state_reg[1] cannot be properly analyzed as its control pin control_game/game_fsm/FSM_onehot_next_state_reg[1]/G is not reached by a timing clock
-Related violations: <none>
-
-TIMING-20#3 Warning
-Non-clocked latch  
-The latch control_game/game_fsm/FSM_onehot_next_state_reg[2] cannot be properly analyzed as its control pin control_game/game_fsm/FSM_onehot_next_state_reg[2]/G is not reached by a timing clock
-Related violations: <none>
-
-TIMING-20#4 Warning
-Non-clocked latch  
-The latch control_game/game_fsm/FSM_onehot_next_state_reg[3] cannot be properly analyzed as its control pin control_game/game_fsm/FSM_onehot_next_state_reg[3]/G is not reached by a timing clock
-Related violations: <none>
-
-TIMING-20#5 Warning
-Non-clocked latch  
-The latch control_game/game_fsm/FSM_onehot_next_state_reg[4] cannot be properly analyzed as its control pin control_game/game_fsm/FSM_onehot_next_state_reg[4]/G is not reached by a timing clock
-Related violations: <none>
-
-LATCH-1#1 Advisory
-Existing latches in the design  
-There are 5 latches found in the design. Inferred latches are often the result of HDL coding mistakes, such as incomplete if or case statements.
 Related violations: <none>
 
 

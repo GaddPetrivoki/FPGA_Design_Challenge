@@ -143,3 +143,38 @@
     <Process Command="vivado.bat" Owner="gabri" Host="LAPTOP-AIR04ARS" Pid="7036" HostCore="8" HostMemory="017058181120">
     </Process>
 </ProcessHandle>
+<?xml version="1.0"?>
+<ProcessHandle Version="1" Minor="0">
+    <Process Command="vivado.bat" Owner="gabri" Host="LAPTOP-AIR04ARS" Pid="17768" HostCore="8" HostMemory="017058181120">
+    </Process>
+</ProcessHandle>
+<?xml version="1.0"?>
+<ProcessHandle Version="1" Minor="0">
+    <Process Command="vivado.bat" Owner="gabri" Host="LAPTOP-AIR04ARS" Pid="17204" HostCore="8" HostMemory="017058181120">
+    </Process>
+</ProcessHandle>
+<?xml version="1.0"?>
+<ProcessHandle Version="1" Minor="0">
+    <Process Command="vivado.bat" Owner="gabri" Host="LAPTOP-AIR04ARS" Pid="8844" HostCore="8" HostMemory="017058181120">
+    </Process>
+</ProcessHandle>
+<?xml version="1.0"?>
+<ProcessHandle Version="1" Minor="0">
+    <Process Command="vivado.bat" Owner="gabri" Host="LAPTOP-AIR04ARS" Pid="8876" HostCore="8" HostMemory="017058181120">
+    </Process>
+</ProcessHandle>
+<?xml version="1.0"?>
+<ProcessHandle Version="1" Minor="0">
+    <Process Command="vivado.bat" Owner="gabri" Host="LAPTOP-AIR04ARS" Pid="9004" HostCore="8" HostMemory="017058181120">
+    </Process>
+</ProcessHandle>
+<?xml version="1.0"?>
+<ProcessHandle Version="1" Minor="0">
+    <Process Command="vivado.bat" Owner="gabri" Host="LAPTOP-AIR04ARS" Pid="17204" HostCore="8" HostMemory="017058181120">
+    </Process>
+</ProcessHandle>
+<?xml version="1.0"?>
+<ProcessHandle Version="1" Minor="0">
+    <Process Command="vivado.bat" Owner="gabri" Host="LAPTOP-AIR04ARS" Pid="14192" HostCore="8" HostMemory="017058181120">
+    </Process>
+</ProcessHandle>

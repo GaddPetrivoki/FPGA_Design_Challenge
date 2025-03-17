@@ -147,8 +147,8 @@ begin
     if rising_edge(clock_1s) then
     
         if game_state = INIT then
-            count <= "1111";
-            lifes <= 3;
+                count <= "1111";
+                lifes <= 3;
         end if;
         
         if game_state = PLAY then
@@ -190,8 +190,8 @@ end process;
     begin
     
         if rising_edge(clock_1ms) then
-            
-            if game_state = IDLE and button_center = '1' then
+           
+            if game_state = IDLE and button_center = '1' and count = "1111" then
                 start_control <= '1';
                
             elsif game_state = INIT then

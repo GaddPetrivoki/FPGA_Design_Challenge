@@ -66,11 +66,11 @@ begin
                 next_state <= current_state;
             end if;
         when IDLE =>
-            if Enter_Btn = '1' then
+            if Enter_Btn = '1' and button_released = '1' then
 
                 
                 next_state <= PLAY;
-            elsif High_Score_Btn = '1' then
+            elsif High_Score_Btn = '1' and button_released = '1' then
             
                 next_state <= HS;
                
@@ -79,25 +79,25 @@ begin
             end if;
         when PLAY =>
             -- Todo missing transition to current score
-            if Pause_Cancel_Btn = '1' then
+            if Pause_Cancel_Btn = '1' and button_released = '1' then
                 next_state <= PAUSE;
                
             else
                 next_state <= current_state;
             end if;
         when PAUSE =>
-            if Enter_Btn = '1' then
+            if Enter_Btn = '1' and button_released = '1' then
 
                 next_state <= PLAY;
-            elsif Pause_Cancel_Btn = '1' and button_released = '0' then
-               -- next_state <= INIT; -- Init or Idle? Init in theory should initialize stuff so might be safer to go with that
+            elsif Pause_Cancel_Btn = '1' and button_released = '1' then
+               next_state <= INIT; -- Init or Idle? Init in theory should initialize stuff so might be safer to go with that
             else
                 next_state <= current_state;
             end if;
             
         when HS =>
             -- Need a timer here
-            if High_Score_Btn = '1' and button_released = '0' then
+            if High_Score_Btn = '1' and button_released = '1' then
                 next_state <= IDLE;
 
             else
@@ -105,7 +105,7 @@ begin
             end if;
             
         when CURRENT_SCORE =>
-            if Enter_Btn = '1' and button_released = '0' then
+            if Enter_Btn = '1' and button_released = '1' then
                 next_state <= IDLE;
 
                 
@@ -129,15 +129,15 @@ begin
     if rising_edge(Clock) then
         current_state <= next_state;
 
-     if (Enter_Btn = '1' or High_Score_Btn = '1' or Pause_Cancel_Btn = '1') then
+    if (Enter_Btn = '1' or High_Score_Btn = '1' or Pause_Cancel_Btn = '1') then
             if debounce_counter < DEBOUNCE_LIMIT then
                 debounce_counter <= debounce_counter + 1;
             else
-                button_released <= '1';
+                button_released <= '1'; -- Button is debounced
             end if;
         else
-            debounce_counter <= 0;
-            button_released <= '0';
+            debounce_counter <= 0; -- Reset counter when button is released
+            button_released <= '0'; -- Reset flag when button is released
         end if;
     
     end if;
