@@ -30,12 +30,16 @@ end fsm;
 
 architecture Behavioral of fsm is
 
-signal counter: integer;
-
 -- type state_type is (INIT, IDLE, PLAY, HS, CURRENT_SCORE, PAUSE);
-signal current_state, next_state: state_type;
+signal current_state, next_state: state_type := INIT;
+signal button_released : STD_LOGIC := '0';
 
+
+signal button_released : STD_LOGIC := '0';
+signal debounce_counter : integer := 0;
+constant DEBOUNCE_LIMIT : integer := 50000;
 begin
+
 
 -- TImer
 
@@ -57,15 +61,18 @@ process(current_state,Enter_Btn,High_Score_Btn, Pause_Cancel_Btn)
 begin
     case current_state is
         when INIT =>
-            if current_state = INIT then
+            if current_state = INIT  then
                 next_state <= IDLE;
             else
                 next_state <= current_state;
             end if;
         when IDLE =>
             if Enter_Btn = '1' then
+
+                
                 next_state <= PLAY;
             elsif High_Score_Btn = '1' then
+            
                 next_state <= HS;
                
             else
@@ -74,34 +81,43 @@ begin
         when PLAY =>
             -- Todo missing transition to current score
             if Pause_Cancel_Btn = '1' then
-            next_state <= PAUSE;
+                next_state <= PAUSE;
+               
             else
                 next_state <= current_state;
             end if;
         when PAUSE =>
             if Enter_Btn = '1' then
+
                 next_state <= PLAY;
+            elsif Pause_Cancel_Btn = '1' and button_released = '0' then
+               -- next_state <= INIT; -- Init or Idle? Init in theory should initialize stuff so might be safer to go with that
             else
                 next_state <= current_state;
             end if;
+            
         when HS =>
             -- Need a timer here
-            if High_Score_Btn = '1' then
+            if High_Score_Btn = '1' and button_released = '0' then
                 next_state <= IDLE;
+
             else
                 next_state <= current_state;
             end if;
             
         when CURRENT_SCORE =>
-            if Enter_Btn = '1' then
+            if Enter_Btn = '1' and button_released = '0' then
                 next_state <= IDLE;
+
+                
+                
             else
                 next_state <= current_state;
             end if;
 
         when others =>
             -- Wtf?
-            
+            next_state <= INIT;
     end case;
     
     
@@ -113,7 +129,21 @@ process(Clock)
 begin
     if rising_edge(Clock) then
         current_state <= next_state;
+
+     if (Enter_Btn = '1' or High_Score_Btn = '1' or Pause_Cancel_Btn = '1') then
+            if debounce_counter < DEBOUNCE_LIMIT then
+                debounce_counter <= debounce_counter + 1;
+            else
+                button_released <= '1';
+            end if;
+        else
+            debounce_counter <= 0;
+            button_released <= '0';
+        end if;
+    
     end if;
+    
+
 end process;
 
 current_state_out <= current_state;

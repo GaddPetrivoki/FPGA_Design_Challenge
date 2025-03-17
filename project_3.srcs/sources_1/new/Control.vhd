@@ -101,6 +101,25 @@ begin
             seg_1 <= "0000001"; -- O
             seg_2 <= "1110001"; -- L
             seg_3 <= "0001000"; -- A
+            
+       elsif game_state = PAUSE then
+            seg_0 <= "0001001"; -- P
+            seg_1 <= "0001000"; -- A
+            seg_2 <= "1000001"; -- U
+            seg_3 <= "0100100"; -- S
+       elsif game_state = HS then
+            seg_0 <= "1001000"; -- H
+            seg_1 <= "1111001"; -- I
+            seg_2 <= "0100000"; -- G
+            seg_3 <= "1001000"; -- H
+            
+            
+        elsif game_state = PLAY then
+            seg_0 <= seg_tens;  
+            seg_1 <= seg_ones;  
+            seg_2 <= seg_lifes; 
+            seg_3 <= seg_number;
+        
         else
             seg_0 <= seg_tens;
             seg_1 <= seg_ones;
@@ -167,10 +186,17 @@ end process;
     begin
     
         if rising_edge(clock_1ms) then
+            
             if game_state = IDLE and button_center = '1' then
                 start_control <= '1';
                
+            elsif game_state = INIT then
+                start_control <= '0';
+                
             end if;
+            
+            
+            
             if button_center = '1' then 
                 submit <= '1';
             end if;

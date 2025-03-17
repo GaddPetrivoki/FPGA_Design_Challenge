@@ -74,12 +74,13 @@ OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_vhdl -library xil_defaultlib {
   {D:/New folder/project_1/project_3.srcs/sources_1/new/Button.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/fsm_types.vhd}
+  {D:/New folder/project_1/project_3.srcs/sources_1/new/fsm.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/Control.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/Display.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/HexTo7Seg.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/RandomNumber.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/Timer.vhd}
-  {D:/New folder/project_1/project_3.srcs/sources_1/new/fsm.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/leds.vhd}
   {D:/New folder/project_1/project_3.srcs/sources_1/new/led_test.vhd}
 }
