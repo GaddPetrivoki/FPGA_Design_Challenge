@@ -95,6 +95,7 @@ begin
             seg_1 <=  "1001000"; -- H
             seg_2 <= "1111001"; -- I
             seg_3 <= "1100000"; -- t
+
             
         elsif game_state = IDLE then
             seg_0 <= "1001000"; -- H
@@ -142,11 +143,14 @@ begin
 
     
     process(clock_1s)
-begin
+    begin
     if rising_edge(clock_1s) then
     
-    
-    
+        if game_state = INIT then
+            count <= "1111";
+            lifes <= 3;
+        end if;
+        
         if game_state = PLAY then
             -- Reset read signals at start of each cycle
             read_number <= '0';  

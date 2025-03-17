@@ -35,7 +35,6 @@ signal current_state, next_state: state_type := INIT;
 signal button_released : STD_LOGIC := '0';
 
 
-signal button_released : STD_LOGIC := '0';
 signal debounce_counter : integer := 0;
 constant DEBOUNCE_LIMIT : integer := 50000;
 begin
