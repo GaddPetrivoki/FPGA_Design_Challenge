@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
-| Date         : Mon Mar 17 17:14:29 2025
+| Date         : Tue Mar 18 20:47:01 2025
 | Host         : LAPTOP-AIR04ARS running 64-bit major release  (build 9200)
 | Command      : report_drc -file led_test_drc_opted.rpt -pb led_test_drc_opted.pb -rpx led_test_drc_opted.rpx
 | Design       : led_test

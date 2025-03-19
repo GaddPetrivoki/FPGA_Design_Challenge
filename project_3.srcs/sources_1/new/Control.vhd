@@ -37,6 +37,7 @@ architecture Behavioral of Control is
            Enter_Btn : in STD_LOGIC;
            High_Score_Btn : in STD_LOGIC;
            Pause_Cancel_Btn : in STD_LOGIC;
+           error : in STD_LOGIC;
            current_state_out : out state_type
            );
 end component;
@@ -61,6 +62,8 @@ end component;
   --type state_type is (INIT, IDLE, PLAY, HS, CURRENT_SCORE, PAUSE);  
     signal game_state : state_type;
     
+    signal error : STD_LOGIC;
+    
     signal submit, read_submit, start_control, read_number : STD_LOGIC := '0';
     signal count : UNSIGNED(3 downto 0) := "1111";
     signal lifes : INTEGER :=3;
@@ -70,7 +73,7 @@ end component;
     
 begin
 
-    game_fsm: fsm port map(Clock=>clock,  Enter_Btn => button_center, High_Score_Btn => button_bottom , Pause_Cancel_Btn => button_top,current_state_out => game_state);
+    game_fsm: fsm port map(Clock=>clock,  Enter_Btn => button_center, High_Score_Btn => button_bottom , Pause_Cancel_Btn => button_top, error => error, current_state_out => game_state);
     
     seg0_translate: HexTo7Seg port map (value => STD_LOGIC_VECTOR(tens_digit), seg => seg_tens);
     seg1_translate: HexTo7Seg port map (value => STD_LOGIC_VECTOR(ones_digit), seg => seg_ones);
@@ -114,6 +117,12 @@ begin
             seg_2 <= "0100000"; -- G
             seg_3 <= "1001000"; -- H
             
+      elsif game_state = ERROR_STATE then
+            seg_0 <= "0000000"; 
+            seg_1 <= "1111111"; 
+            seg_2 <= "0000000"; 
+            seg_3 <= "1111111"; 
+      
             
         elsif game_state = PLAY then
             seg_0 <= seg_tens;  
@@ -162,9 +171,14 @@ begin
                     read_number <= '1';
                     count <= "1111"; -- Reset counter
                     read_submit <= '1';
+                    
                 elsif game_value /= random_number then
-                    count <= "0000";
+                    count <= "0001";
                     read_submit <= '1';
+                    
+                else 
+                    error <= '1';
+                
                 end if;   
             elsif read_submit = '1' then
                 -- Keep read_submit active until next clock cycle after submit is cleared
@@ -191,7 +205,8 @@ end process;
     
         if rising_edge(clock_1ms) then
            
-            if game_state = IDLE and button_center = '1' and count = "1111" then
+            if game_state = PLAY and count = "1111" and start_control <= '0' then
+                error <= '0';
                 start_control <= '1';
                
             elsif game_state = INIT then

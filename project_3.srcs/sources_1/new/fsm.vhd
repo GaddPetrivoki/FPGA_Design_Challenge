@@ -23,8 +23,10 @@ entity fsm is
            --Right_Btn : in STD_LOGIC;
            High_Score_Btn : in STD_LOGIC;
            Pause_Cancel_Btn : in STD_LOGIC;
+           error: in STD_LOGIC;
           -- Leds : out STD_LOGIC
           current_state_out : out state_type
+          
           );
 end fsm;
 
@@ -34,9 +36,7 @@ architecture Behavioral of fsm is
 signal current_state, next_state: state_type := INIT;
 signal button_released : STD_LOGIC := '0';
 
-
-signal debounce_counter : integer := 0;
-constant DEBOUNCE_LIMIT : integer := 50000;
+--signal error: STDL_LOGIC := '0';
 begin
 
 
@@ -58,6 +58,10 @@ begin
 
 process(current_state,Enter_Btn,High_Score_Btn, Pause_Cancel_Btn)
 begin
+    if error = '1' then
+        next_state <= ERROR_STATE; 
+        
+    else 
     case current_state is
         when INIT =>
             if current_state = INIT  then
@@ -113,13 +117,19 @@ begin
             else
                 next_state <= current_state;
             end if;
+        when ERROR_STATE =>
+            if Enter_Btn = '1' and button_released = '1' then
 
+                next_state <= PLAY;
+            else
+                next_state <= current_state;
+            end if;
         when others =>
             -- Wtf?
             next_state <= INIT;
     end case;
-    
-    
+    end if;
+
 
 end process;
 
@@ -130,13 +140,8 @@ begin
         current_state <= next_state;
 
     if (Enter_Btn = '1' or High_Score_Btn = '1' or Pause_Cancel_Btn = '1') then
-            if debounce_counter < DEBOUNCE_LIMIT then
-                debounce_counter <= debounce_counter + 1;
-            else
                 button_released <= '1'; -- Button is debounced
-            end if;
-        else
-            debounce_counter <= 0; -- Reset counter when button is released
+      else
             button_released <= '0'; -- Reset flag when button is released
         end if;
     
@@ -145,5 +150,7 @@ begin
 
 end process;
 
+
+ 
 current_state_out <= current_state;
 end Behavioral;
