@@ -44,12 +44,16 @@ begin
     end process;
     
     
-    process(clock_1ms)
+    process(clock_1ms, reset)
     begin
+        
+        
         if rising_edge(clock_1ms) then
-            if (start = '0' or reset = '1') then
+            if start = '0' then
                 state <= 0;
                 press_button <= '0';
+            elsif (reset = '1') then
+                state <= 0;
             elsif (button_right = '1' and state < 16) then
                 if press_button = '0' then
                     press_button <= '1';

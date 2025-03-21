@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
-| Date         : Tue Mar 18 20:47:05 2025
+| Date         : Thu Mar 20 18:21:31 2025
 | Host         : LAPTOP-AIR04ARS running 64-bit major release  (build 9200)
 | Command      : report_control_sets -verbose -file led_test_control_sets_placed.rpt
 | Design       : led_test
@@ -23,11 +23,11 @@ Table of Contents
 +----------------------------------------------------------+-------+
 |                          Status                          | Count |
 +----------------------------------------------------------+-------+
-| Total control sets                                       |    15 |
-|    Minimum number of control sets                        |    15 |
+| Total control sets                                       |    22 |
+|    Minimum number of control sets                        |    22 |
 |    Addition due to synthesis replication                 |     0 |
 |    Addition due to physical synthesis replication        |     0 |
-| Unused register locations in slices containing registers |    42 |
+| Unused register locations in slices containing registers |    56 |
 +----------------------------------------------------------+-------+
 * Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
 ** Run report_qor_suggestions for automated merging and remapping suggestions
@@ -39,15 +39,15 @@ Table of Contents
 +--------------------+-------+
 |       Fanout       | Count |
 +--------------------+-------+
-| Total control sets |    15 |
-| >= 0 to < 4        |     0 |
-| >= 4 to < 6        |     6 |
+| Total control sets |    22 |
+| >= 0 to < 4        |     3 |
+| >= 4 to < 6        |     5 |
 | >= 6 to < 8        |     0 |
 | >= 8 to < 10       |     0 |
 | >= 10 to < 12      |     0 |
 | >= 12 to < 14      |     0 |
 | >= 14 to < 16      |     0 |
-| >= 16              |     9 |
+| >= 16              |    14 |
 +--------------------+-------+
 * Control sets can be remapped at either synth_design or opt_design
 
@@ -58,36 +58,43 @@ Table of Contents
 +--------------+-----------------------+------------------------+-----------------+--------------+
 | Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
 +--------------+-----------------------+------------------------+-----------------+--------------+
-| No           | No                    | No                     |              54 |           33 |
+| No           | No                    | No                     |              57 |           32 |
 | No           | No                    | Yes                    |               0 |            0 |
-| No           | Yes                   | No                     |             137 |           39 |
-| Yes          | No                    | No                     |               4 |            1 |
+| No           | Yes                   | No                     |             167 |           48 |
+| Yes          | No                    | No                     |              36 |           10 |
 | Yes          | No                    | Yes                    |               0 |            0 |
-| Yes          | Yes                   | No                     |              75 |           24 |
+| Yes          | Yes                   | No                     |             172 |           46 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
 
 
 4. Detailed Control Set Information
 -----------------------------------
 
-+------------------+---------------------------------------------------------+---------------------------------------------------------+------------------+----------------+--------------+
-|   Clock Signal   |                      Enable Signal                      |                     Set/Reset Signal                    | Slice Load Count | Bel Load Count | Bels / Slice |
-+------------------+---------------------------------------------------------+---------------------------------------------------------+------------------+----------------+--------------+
-|  clock_IBUF_BUFG | control_game/randon_number/mixed_bits[3]_i_1_n_0        |                                                         |                1 |              4 |         4.00 |
-|  clock_IBUF_BUFG | control_game/randon_number/mixed_bits[3]_i_1_n_0        | control_game/randon_number/random_reg_0                 |                1 |              4 |         4.00 |
-|  clock_1s_BUFG   | control_game/game_fsm/FSM_onehot_current_state_reg[1]_0 | control_game/game_fsm/start_control                     |                1 |              4 |         4.00 |
-|  clock_1s_BUFG   |                                                         |                                                         |                3 |              5 |         1.67 |
-|  timers/CLK      |                                                         |                                                         |                3 |              5 |         1.67 |
-|  timers/CLK      | control_leds/state[4]_i_2_n_0                           | control_game/SR[0]                                      |                2 |              5 |         2.50 |
-|  clock_IBUF_BUFG |                                                         | button_center/debounce_count[0]_i_1__3_n_0              |                6 |             21 |         3.50 |
-|  clock_IBUF_BUFG |                                                         | button_down/debounce_count[0]_i_1__2_n_0                |                6 |             21 |         3.50 |
-|  clock_IBUF_BUFG |                                                         | button_left/debounce_count[0]_i_1_n_0                   |                6 |             21 |         3.50 |
-|  clock_IBUF_BUFG |                                                         | button_right/debounce_count[0]_i_1__0_n_0               |                6 |             21 |         3.50 |
-|  clock_IBUF_BUFG |                                                         | button_up/debounce_count[0]_i_1__1_n_0                  |                6 |             21 |         3.50 |
-|  clock_1s_BUFG   | control_game/game_fsm/FSM_onehot_current_state_reg[1]_1 | control_game/game_fsm/FSM_onehot_current_state_reg[0]_4 |               11 |             30 |         2.73 |
-|  clock_IBUF_BUFG |                                                         | timers/p_0_in                                           |                9 |             32 |         3.56 |
-|  clock_IBUF_BUFG | timers/p_0_in                                           | timers/count_1s_control[31]_i_1_n_0                     |                9 |             32 |         3.56 |
-|  clock_IBUF_BUFG |                                                         |                                                         |               27 |             44 |         1.63 |
-+------------------+---------------------------------------------------------+---------------------------------------------------------+------------------+----------------+--------------+
++---------------------------------------------+------------------------------------------------------+------------------------------------------------------+------------------+----------------+--------------+
+|                 Clock Signal                |                     Enable Signal                    |                   Set/Reset Signal                   | Slice Load Count | Bel Load Count | Bels / Slice |
++---------------------------------------------+------------------------------------------------------+------------------------------------------------------+------------------+----------------+--------------+
+|  control_game/clock_game_control_count4_out |                                                      |                                                      |                1 |              1 |         1.00 |
+|  clock_1s_BUFG                              |                                                      |                                                      |                2 |              3 |         1.50 |
+|  clock_game_BUFG                            |                                                      |                                                      |                2 |              3 |         1.50 |
+|  clock_game_BUFG                            | control_game/game_fsm/read_submit                    | control_game/game_fsm/SS[0]                          |                2 |              4 |         2.00 |
+|  clock_IBUF_BUFG                            | control_game/randon_number/mixed_bits                |                                                      |                1 |              4 |         4.00 |
+|  clock_IBUF_BUFG                            | control_game/randon_number/mixed_bits                | control_game/randon_number/random_reg                |                1 |              4 |         4.00 |
+|  timers/CLK                                 |                                                      |                                                      |                4 |              5 |         1.25 |
+|  timers/CLK                                 | control_leds/state[4]_i_2_n_0                        | control_game/SR[0]                                   |                2 |              5 |         2.50 |
+|  clock_IBUF_BUFG                            |                                                      | button_right/debounce_count[0]_i_1__0_n_0            |                6 |             21 |         3.50 |
+|  clock_IBUF_BUFG                            |                                                      | button_up/debounce_count[0]_i_1__1_n_0               |                6 |             21 |         3.50 |
+|  clock_IBUF_BUFG                            |                                                      | button_center/debounce_count[0]_i_1__3_n_0           |                6 |             21 |         3.50 |
+|  clock_IBUF_BUFG                            |                                                      | button_down/debounce_count[0]_i_1__2_n_0             |                6 |             21 |         3.50 |
+|  clock_IBUF_BUFG                            |                                                      | button_left/debounce_count[0]_i_1_n_0                |                6 |             21 |         3.50 |
+|  timers/initial_count_reg0_BUFG             |                                                      | control_game/AR[0]                                   |                9 |             30 |         3.33 |
+|  clock_1s_BUFG                              | control_game/game_fsm/FSM_onehot_next_state_reg[2]_1 | control_game/game_fsm/FSM_onehot_next_state_reg[2]_2 |                8 |             31 |         3.88 |
+|  clock_game_BUFG                            | control_game/game_fsm/FSM_onehot_next_state_reg[4]_0 | control_game/game_fsm/FSM_onehot_next_state_reg[5]_3 |                8 |             32 |         4.00 |
+|  clock_game_BUFG                            | control_game/game_fsm/E[0]                           |                                                      |                9 |             32 |         3.56 |
+|  clock_game_BUFG                            | control_game/randon_number/sel                       | control_game/game_fsm/FSM_onehot_next_state_reg[5]_3 |                8 |             32 |         4.00 |
+|  clock_IBUF_BUFG                            |                                                      | timers/p_0_in                                        |                9 |             32 |         3.56 |
+|  clock_IBUF_BUFG                            | timers/count_1s_control[31]_i_2_n_0                  | timers/clock_1s_control                              |                9 |             32 |         3.56 |
+|  clock_IBUF_BUFG                            | timers/p_0_in                                        | timers/clear                                         |                8 |             32 |         4.00 |
+|  clock_IBUF_BUFG                            |                                                      |                                                      |               23 |             45 |         1.96 |
++---------------------------------------------+------------------------------------------------------+------------------------------------------------------+------------------+----------------+--------------+
 
 

@@ -7,7 +7,8 @@ entity Control is
   Port (
     clock         : IN STD_LOGIC;
     clock_1ms     : IN STD_LOGIC;
-    clock_1s      : IN STD_LOGIC;
+    clock_1s : IN STD_LOGIC;
+    clock_game      : IN STD_LOGIC;
     
     button_center : IN STD_LOGIC;
     button_top     : IN STD_LOGIC;
@@ -16,6 +17,8 @@ entity Control is
     game_value    : IN STD_LOGIC_VECTOR(3 downto 0);
     start         : OUT STD_LOGIC;
     reset_leds    : OUT STD_LOGIC;
+    update_game_clock    : OUT STD_LOGIC;
+    reset_clock    : OUT STD_LOGIC;
     seg_0         : OUT STD_LOGIC_VECTOR(6 downto 0);
     seg_1         : OUT STD_LOGIC_VECTOR(6 downto 0);
     seg_2         : OUT STD_LOGIC_VECTOR(6 downto 0);
@@ -36,9 +39,11 @@ architecture Behavioral of Control is
           
            Enter_Btn : in STD_LOGIC;
            High_Score_Btn : in STD_LOGIC;
-           Pause_Cancel_Btn : in STD_LOGIC;
-           error : in STD_LOGIC;
-           current_state_out : out state_type
+           Pause_Cancel_Btn : in STD_LOGIC;           
+           lifes : in integer;
+           current_state_out : out state_type;
+            HS_timer_done : in STD_LOGIC;
+            CS_timer_done : in STD_LOGIC
            );
 end component;
 
@@ -61,22 +66,26 @@ end component;
   -- State management 
   --type state_type is (INIT, IDLE, PLAY, HS, CURRENT_SCORE, PAUSE);  
     signal game_state : state_type;
-    
-    signal error : STD_LOGIC;
-    
-    signal submit, read_submit, start_control, read_number : STD_LOGIC := '0';
+        
+    signal submit, read_submit, start_control, read_number, HS_timer_done,CS_timer_done : STD_LOGIC := '0';
     signal count : UNSIGNED(3 downto 0) := "1111";
     signal lifes : INTEGER :=3;
-    signal tens_digit, ones_digit : UNSIGNED(3 downto 0);
+    signal score, high_score, HS_count  : INTEGER :=0;
+    signal tens_digit, ones_digit, HS_tens_digit, HS_ones_digit : UNSIGNED(3 downto 0);
     signal random_number : STD_LOGIC_VECTOR(3 downto 0);
-    signal seg_tens, seg_ones, seg_lifes, seg_number : STD_LOGIC_VECTOR(6 downto 0);
+    signal seg_tens, seg_ones, seg_lifes, seg_number, HS_seg_tens, HS_seg_ones : STD_LOGIC_VECTOR(6 downto 0);
     
 begin
 
-    game_fsm: fsm port map(Clock=>clock,  Enter_Btn => button_center, High_Score_Btn => button_bottom , Pause_Cancel_Btn => button_top, error => error, current_state_out => game_state);
-    
+    game_fsm: fsm port map(Clock=>clock,  Enter_Btn => button_center, High_Score_Btn => button_bottom , Pause_Cancel_Btn => button_top, current_state_out => game_state, lifes => lifes,HS_timer_done=>HS_timer_done,CS_timer_done=>CS_timer_done);
+   
     seg0_translate: HexTo7Seg port map (value => STD_LOGIC_VECTOR(tens_digit), seg => seg_tens);
     seg1_translate: HexTo7Seg port map (value => STD_LOGIC_VECTOR(ones_digit), seg => seg_ones);
+    
+    HS_seg0_translate: HexTo7Seg port map (value => STD_LOGIC_VECTOR(HS_tens_digit), seg => HS_seg_tens);
+    HS_seg1_translate: HexTo7Seg port map (value => STD_LOGIC_VECTOR(HS_ones_digit), seg => HS_seg_ones);
+    
+    
     seg3_number:    HexTo7Seg port map (value => random_number, seg => seg_number);
     randon_number:  RandomNumber port map (clock => clock, read=> read_number, random_number=> random_number);
     
@@ -90,7 +99,7 @@ begin
         end case;
     end process;
     
-    process (game_state, seg_tens, seg_ones, seg_lifes, seg_number)
+    process (game_state, seg_tens, seg_ones, seg_lifes, seg_number, HS_seg_tens, HS_seg_ones)
     begin
    
         if  game_state = INIT then
@@ -107,22 +116,20 @@ begin
             seg_3 <= "0001000"; -- A
             
        elsif game_state = PAUSE then
-            seg_0 <= "0001001"; -- P
+            seg_0 <= "0011000"; -- P
             seg_1 <= "0001000"; -- A
             seg_2 <= "1000001"; -- U
             seg_3 <= "0100100"; -- S
        elsif game_state = HS then
-            seg_0 <= "1001000"; -- H
-            seg_1 <= "1111001"; -- I
-            seg_2 <= "0100000"; -- G
-            seg_3 <= "1001000"; -- H
-            
-      elsif game_state = ERROR_STATE then
-            seg_0 <= "0000000"; 
-            seg_1 <= "1111111"; 
-            seg_2 <= "0000000"; 
-            seg_3 <= "1111111"; 
-      
+            seg_0 <= "1111111"; -- H
+            seg_1 <= "1111111"; -- I
+            seg_2 <= HS_seg_tens; -- G
+            seg_3 <= HS_seg_ones; -- H
+        elsif game_state = CURRENT_SCORE then
+            seg_0 <= "1111111"; -- H
+            seg_1 <= "1111111"; -- I
+            seg_2 <= HS_seg_tens; -- G
+            seg_3 <= HS_seg_ones; -- H
             
         elsif game_state = PLAY then
             seg_0 <= seg_tens;  
@@ -148,54 +155,108 @@ begin
             ones_digit <= count;
         end if;
     end process;
-
-
     
+    process(game_state, high_score, score)
+    begin
+    if game_state = HS then
+        if high_score >= 10 then -- 10
+            HS_tens_digit <= TO_UNSIGNED(1, 4);
+            HS_ones_digit <= TO_UNSIGNED(high_score - 10, 4); -- count - 10
+        else
+            HS_tens_digit <= "0000";
+            HS_ones_digit <= TO_UNSIGNED(high_score, 4);
+        end if;
+     elsif game_state = CURRENT_SCORE then
+         if score >= 10 then -- 10
+            HS_tens_digit <= TO_UNSIGNED(1, 4);
+            HS_ones_digit <= TO_UNSIGNED(score - 10, 4); -- count - 10
+        else
+            HS_tens_digit <= "0000";
+            HS_ones_digit <= TO_UNSIGNED(score, 4);
+        end if;
+     else    
+       HS_tens_digit <= "0000";
+       HS_ones_digit <= "0000";
+     end if;
+    end process;
+
     process(clock_1s)
     begin
-    if rising_edge(clock_1s) then
+    if (rising_edge(clock_1s)) then
+     if (game_state = HS) then
+        HS_count <= HS_COUNT + 1;
+        if HS_count = 5 then
+            HS_timer_done <= '1';
+            HS_Count <= 0;
+        end if;
+     elsif game_state = CURRENT_SCORE then
+        HS_count <= HS_COUNT + 1;
+        if HS_count = 5 then
+            CS_timer_done <= '1';
+            HS_Count <= 0;
+        end if;
+     else 
+        CS_timer_done <= '0';
+        
+        HS_timer_done <= '0';
+     end if;
+    end if;    
+    end process;
     
-        if game_state = INIT then
+    process(clock_game)
+    begin
+    if rising_edge(clock_game) then
+    
+        if game_state = IDLE or game_state = INIT then
                 count <= "1111";
                 lifes <= 3;
-        end if;
+                reset_clock <= '1';
+                
+                if score > high_score then
+                    high_score <= score;
+                end if;
+                score <= 0;
+                
         
-        if game_state = PLAY then
+        
+        elsif game_state = PLAY then
+            reset_clock <= '0';
             -- Reset read signals at start of each cycle
             read_number <= '0';  
             
             -- Score the value when submit
             if submit = '1' then
+                update_game_clock<= '1';
                 if game_value = random_number then
                     reset_leds <= '1';
                     read_number <= '1';
                     count <= "1111"; -- Reset counter
                     read_submit <= '1';
+                    score <= score + 1;
                     
-                elsif game_value /= random_number then
-                    count <= "0001";
+                else
+                    reset_leds <= '1';
+                    read_number <= '1';
+                    lifes <= lifes - 1;
+                    count <= "1111";
                     read_submit <= '1';
-                    
-                else 
-                    error <= '1';
-                
                 end if;   
-            elsif read_submit = '1' then
+            else
                 -- Keep read_submit active until next clock cycle after submit is cleared
                 read_submit <= '0';
-            end if;     
-                
-            -- Clock checker
-            if count = "0000" then
-                reset_leds <= '1';
-                read_number <= '1';
-                lifes <= lifes - 1;
-                count <= "1111"; -- Reset counter
-            else
-                reset_leds <= '0';
-                count <= count - 1;
+                update_game_clock<= '0';
+                -- Clock checker
+                if count = "0000" then
+                    reset_leds <= '1';
+                    read_number <= '1';
+                    lifes <= lifes - 1;
+                    count <= "1111"; -- Reset counter
+                else
+                    reset_leds <= '0';
+                    count <= count - 1;
+                end if;
             end if;
-        end if;                    
+        end if;                   
     end if;         
 end process;
 
@@ -204,29 +265,25 @@ end process;
     begin
     
         if rising_edge(clock_1ms) then
-           
-            if game_state = PLAY and count = "1111" and start_control <= '0' then
-                error <= '0';
+           if game_state = PAUSE then
+             submit<='0';
+             start_control <='0';
+            elsif game_state = PLAY and start_control = '0' then
                 start_control <= '1';
-               
-            elsif game_state = INIT then
+                submit<='0';
+            elsif game_state = PLAY then
+                if  button_center = '1' then 
+                    submit <= '1';
+                end if;
+                if read_submit = '1' then
+                    submit <= '0';
+                end if;
+            else
                 start_control <= '0';
-                
             end if;
-            
-            
-            
-            if button_center = '1' then 
-                submit <= '1';
-            end if;
-            if read_submit = '1' then
-                submit <= '0';
-            end if;
-        end if;
-        
+        end if; 
 end process;
     
     start <= start_control;
-  
     
 end Behavioral;

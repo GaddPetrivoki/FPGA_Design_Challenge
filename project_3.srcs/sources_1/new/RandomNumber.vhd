@@ -27,7 +27,7 @@ begin
                 read_captured <= '1';
                 mixed_bits <= counter(3 downto 0) xor counter(7 downto 4);
                 if mixed_bits = 0 then
-                    random_reg <= "0001"; -- Si es 0, forzar a 1
+                    random_reg <= "0011"; -- Si es 0, forzar a 1
                 else
                     random_reg <= mixed_bits;
                 end if;

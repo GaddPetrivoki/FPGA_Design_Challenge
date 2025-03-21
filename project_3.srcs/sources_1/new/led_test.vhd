@@ -34,9 +34,12 @@ architecture Behavioral of led_test is
   
   component Timer
       Port (  
-                clock     : IN STD_LOGIC;
-                clock_1ms : OUT STD_LOGIC;
-                clock_1s  : OUT STD_LOGIC
+                clock        : IN STD_LOGIC;
+                update_game_clock: IN STD_LOGIC;
+                reset_clock: IN STD_LOGIC;
+                clock_1ms    : OUT STD_LOGIC;
+                clock_1s     : OUT STD_LOGIC;
+                clock_game   : OUT std_logic
             );
   end component;
   
@@ -57,13 +60,16 @@ architecture Behavioral of led_test is
       Port (  
                 clock         : IN STD_LOGIC;
                 clock_1ms     : IN STD_LOGIC;
-                clock_1s      : IN STD_LOGIC;
+                clock_1s        : IN STD_LOGIC;
+                clock_game      : IN STD_LOGIC;
                 button_center : IN STD_LOGIC;
                 button_top     : IN STD_LOGIC;
                 button_bottom    : IN STD_LOGIC;
                 game_value    : IN STD_LOGIC_VECTOR(3 downto 0);
                 start         : OUT STD_LOGIC;
                 reset_leds    : OUT STD_LOGIC;
+                update_game_clock    : OUT STD_LOGIC;
+                reset_clock    : OUT STD_LOGIC;
                 seg_0         : OUT STD_LOGIC_VECTOR(6 downto 0);
                 seg_1         : OUT STD_LOGIC_VECTOR(6 downto 0);
                 seg_2         : OUT STD_LOGIC_VECTOR(6 downto 0);
@@ -71,14 +77,14 @@ architecture Behavioral of led_test is
             );
   end component;
   
-  signal start, reset_leds, clock_1ms, clock_1s : STD_LOGIC; -- for reset system and initial state
+  signal start, reset_leds, clock_1ms, clock_1s, clock_game, update_game_clock, reset_clock : STD_LOGIC; -- for reset system and initial state
   signal seg_0, seg_1, seg_2, seg_3 : STD_LOGIC_VECTOR(6 downto 0);
   signal game_value  : STD_LOGIC_VECTOR(3 downto 0); -- values
   signal buttons_clean              : STD_LOGIC_VECTOR(4 downto 0); -- buttons debounce
   
 begin
-    control_game  : Control port map (clock=> clock, clock_1ms=> clock_1ms, clock_1s=> clock_1s, button_center=> buttons_clean(4),  button_top=> buttons_clean(2), button_bottom=>buttons_clean(3), game_value=>game_value, start=>start, reset_leds=> reset_leds, seg_0=>seg_0, seg_1=>seg_1, seg_2=>seg_2, seg_3=>seg_3);
-    timers        : Timer   port map (clock=> clock, clock_1ms=> clock_1ms, clock_1s=>clock_1s);
+    control_game  : Control port map (clock=> clock, clock_1ms=> clock_1ms,clock_1s => clock_1s, clock_game=> clock_game, button_center=> buttons_clean(4),  button_top=> buttons_clean(2), button_bottom=>buttons_clean(3), game_value=>game_value, start=>start, reset_leds=> reset_leds,update_game_clock=>update_game_clock, reset_clock=> reset_clock,seg_0=>seg_0, seg_1=>seg_1, seg_2=>seg_2, seg_3=>seg_3);
+    timers        : Timer   port map (clock=> clock,reset_clock => reset_clock, update_game_clock=> update_game_clock, clock_1ms=> clock_1ms, clock_1s=>clock_1s, clock_game => clock_game);
     button_left   : Button  port map (clock=> clock, button_input=> buttons(0), button_output=>buttons_clean(0));
     button_right  : Button  port map (clock=> clock, button_input=> buttons(1), button_output=>buttons_clean(1));
     button_up     : Button  port map (clock=> clock, button_input=> buttons(2), button_output=>buttons_clean(2));

@@ -23,10 +23,11 @@ entity fsm is
            --Right_Btn : in STD_LOGIC;
            High_Score_Btn : in STD_LOGIC;
            Pause_Cancel_Btn : in STD_LOGIC;
-           error: in STD_LOGIC;
+           lifes: in integer;
           -- Leds : out STD_LOGIC
-          current_state_out : out state_type
-          
+          current_state_out : out state_type;
+          CS_timer_done : in STD_LOGIC;
+          HS_timer_done : in STD_LOGIC
           );
 end fsm;
 
@@ -35,7 +36,7 @@ architecture Behavioral of fsm is
 -- type state_type is (INIT, IDLE, PLAY, HS, CURRENT_SCORE, PAUSE);
 signal current_state, next_state: state_type := INIT;
 signal button_released : STD_LOGIC := '0';
-
+ 
 --signal error: STDL_LOGIC := '0';
 begin
 
@@ -56,12 +57,10 @@ begin
 
 -- State Management
 
-process(current_state,Enter_Btn,High_Score_Btn, Pause_Cancel_Btn)
+process(Clock, next_state)
 begin
-    if error = '1' then
-        next_state <= ERROR_STATE; 
-        
-    else 
+    if rising_edge(Clock) then
+ 
     case current_state is
         when INIT =>
             if current_state = INIT  then
@@ -70,57 +69,44 @@ begin
                 next_state <= current_state;
             end if;
         when IDLE =>
-            if Enter_Btn = '1' and button_released = '1' then
-
-                
+            if Enter_Btn = '1' then
                 next_state <= PLAY;
-            elsif High_Score_Btn = '1' and button_released = '1' then
-            
+            elsif High_Score_Btn = '1' then
                 next_state <= HS;
-               
             else
                 next_state <= current_state;
             end if;
         when PLAY =>
-            -- Todo missing transition to current score
-            if Pause_Cancel_Btn = '1' and button_released = '1' then
+            if lifes = 0 then
+                next_state <= CURRENT_SCORE;
+            elsif Pause_Cancel_Btn = '1' then
+                button_released <= '1';
                 next_state <= PAUSE;
-               
             else
                 next_state <= current_state;
             end if;
         when PAUSE =>
-            if Enter_Btn = '1' and button_released = '1' then
-
+            if Enter_Btn = '1' then
                 next_state <= PLAY;
-            elsif Pause_Cancel_Btn = '1' and button_released = '1' then
-               next_state <= INIT; -- Init or Idle? Init in theory should initialize stuff so might be safer to go with that
+            elsif Pause_Cancel_Btn = '1' and button_released = '0' then
+               next_state <= IDLE; -- Init or Idle? Init in theory should initialize stuff so might be safer to go with that
             else
+                if Pause_Cancel_Btn = '0' then 
+                    button_released <= '0';
+                end if;
                 next_state <= current_state;
             end if;
             
-        when HS =>
-            -- Need a timer here
-            if High_Score_Btn = '1' and button_released = '1' then
+        when HS =>            
+            if HS_timer_done = '1' then 
                 next_state <= IDLE;
-
             else
                 next_state <= current_state;
             end if;
             
         when CURRENT_SCORE =>
-            if Enter_Btn = '1' and button_released = '1' then
+           if CS_timer_done = '1' then 
                 next_state <= IDLE;
-
-                
-                
-            else
-                next_state <= current_state;
-            end if;
-        when ERROR_STATE =>
-            if Enter_Btn = '1' and button_released = '1' then
-
-                next_state <= PLAY;
             else
                 next_state <= current_state;
             end if;
@@ -129,28 +115,9 @@ begin
             next_state <= INIT;
     end case;
     end if;
-
-
-end process;
-
--- Update state
-process(Clock)
-begin
-    if rising_edge(Clock) then
-        current_state <= next_state;
-
-    if (Enter_Btn = '1' or High_Score_Btn = '1' or Pause_Cancel_Btn = '1') then
-                button_released <= '1'; -- Button is debounced
-      else
-            button_released <= '0'; -- Reset flag when button is released
-        end if;
-    
-    end if;
-    
+    current_state <= next_state;
 
 end process;
 
-
- 
 current_state_out <= current_state;
 end Behavioral;

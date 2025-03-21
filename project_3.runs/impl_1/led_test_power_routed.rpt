@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
-| Date             : Tue Mar 18 20:47:43 2025
+| Date             : Thu Mar 20 18:22:09 2025
 | Host             : LAPTOP-AIR04ARS running 64-bit major release  (build 9200)
 | Command          : report_power -file led_test_power_routed.rpt -pb led_test_power_summary_routed.pb -rpx led_test_power_routed.rpx
 | Design           : led_test
@@ -30,10 +30,10 @@ Table of Contents
 ----------
 
 +--------------------------+----------------------------------+
-| Total On-Chip Power (W)  | 33.098 (Junction temp exceeded!) |
+| Total On-Chip Power (W)  | 37.637 (Junction temp exceeded!) |
 | Design Power Budget (W)  | Unspecified*                     |
 | Power Budget Margin (W)  | NA                               |
-| Dynamic (W)              | 32.612                           |
+| Dynamic (W)              | 37.151                           |
 | Device Static (W)        | 0.486                            |
 | Effective TJA (C/W)      | 5.0                              |
 | Max Ambient (C)          | 0.0                              |
@@ -52,16 +52,17 @@ Table of Contents
 +----------------+-----------+----------+-----------+-----------------+
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
-| Slice Logic    |     0.637 |      604 |       --- |             --- |
-|   LUT as Logic |     0.456 |      220 |     20800 |            1.06 |
-|   CARRY4       |     0.102 |       56 |      8150 |            0.69 |
-|   Register     |     0.072 |      270 |     41600 |            0.65 |
-|   BUFG         |     0.006 |        2 |        32 |            6.25 |
-|   Others       |     0.000 |       22 |       --- |             --- |
-| Signals        |     0.782 |      500 |       --- |             --- |
-| I/O            |    31.193 |       33 |       106 |           31.13 |
+| Slice Logic    |     1.054 |     1060 |       --- |             --- |
+|   LUT as Logic |     0.775 |      358 |     20800 |            1.72 |
+|   CARRY4       |     0.175 |      108 |      8150 |            1.33 |
+|   Register     |     0.081 |      432 |     41600 |            1.04 |
+|   BUFG         |     0.023 |        4 |        32 |           12.50 |
+|   F7/F8 Muxes  |    <0.001 |        2 |     32600 |           <0.01 |
+|   Others       |     0.000 |       24 |       --- |             --- |
+| Signals        |     1.152 |      782 |       --- |             --- |
+| I/O            |    34.945 |       33 |       106 |           31.13 |
 | Static Power   |     0.486 |          |           |                 |
-| Total          |    33.098 |          |           |                 |
+| Total          |    37.637 |          |           |                 |
 +----------------+-----------+----------+-----------+-----------------+
 
 
@@ -71,9 +72,9 @@ Table of Contents
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Source    | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
-| Vccint    |       1.000 |     1.783 |       1.443 |      0.341 |       NA    | Unspecified | NA         |
-| Vccaux    |       1.800 |     1.196 |       1.142 |      0.053 |       NA    | Unspecified | NA         |
-| Vcco33    |       3.300 |     8.823 |       8.822 |      0.001 |       NA    | Unspecified | NA         |
+| Vccint    |       1.000 |     2.570 |       2.230 |      0.341 |       NA    | Unspecified | NA         |
+| Vccaux    |       1.800 |     1.333 |       1.280 |      0.053 |       NA    | Unspecified | NA         |
+| Vcco33    |       3.300 |     9.885 |       9.884 |      0.001 |       NA    | Unspecified | NA         |
 | Vcco25    |       2.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco18    |       1.800 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco15    |       1.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
@@ -138,18 +139,17 @@ Table of Contents
 +-------------------+-----------+
 | Name              | Power (W) |
 +-------------------+-----------+
-| led_test          |    32.612 |
-|   button_center   |     0.095 |
-|   button_down     |     0.089 |
-|   button_left     |     0.097 |
-|   button_right    |     0.091 |
-|   button_up       |     0.099 |
-|   control_game    |     0.337 |
-|     game_fsm      |     0.178 |
-|     randon_number |     0.098 |
-|   control_leds    |     0.016 |
-|   display7seg     |     0.380 |
-|   timers          |     0.169 |
+| led_test          |    37.151 |
+|   button_center   |     0.094 |
+|   button_down     |     0.095 |
+|   button_left     |     0.088 |
+|   button_right    |     0.088 |
+|   button_up       |     0.100 |
+|   control_game    |     0.535 |
+|     game_fsm      |     0.340 |
+|     randon_number |     0.116 |
+|   display7seg     |     0.495 |
+|   timers          |     0.632 |
 +-------------------+-----------+
 
 
